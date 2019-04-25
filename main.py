@@ -61,9 +61,20 @@ def new_entry():
 
     else:
 
-        if request.form['title'] == '' or request.form['body'] == '':
+        if request.form['title'] == '' and request.form['body'] == '':
             flash("Please enter something.", 'error')
             return redirect('/newpost')
+
+        elif request.form['title'] == '':
+            flash("Please enter a title.", 'error')
+            body = request.form['body']
+            return render_template('/newpost.html', body=body)
+            
+
+        elif request.form['body'] == '':
+            flash("Please enter a body.", 'error')
+            title = request.form['title']
+            return render_template('/newpost.html', title=title)
             
         else:
 

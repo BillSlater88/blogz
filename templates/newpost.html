@@ -5,13 +5,13 @@
     <form action='/newpost' method='post'>
         <label>
             Title:
-            <input type="text" name='title' />
+            <input type="text" name='title' value='{{ title }}' />
         </label>
         <br>
         <br>
         <label>
             Blog:
-            <textarea name='body'></textarea>
+            <textarea name='body' >{{ body }}</textarea>
         </label>
         <input type="submit" name='Submit Entry' />
     </form>
