@@ -33,18 +33,29 @@ class User(db.Model):
         self.username = username
         self.password = password
 
-
+@app.before_request
+def require_login():
+    allowed_routes = ['log_in', 'signup', 'blog_page', 'index']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog_page():
 
     if request.args.get('id'):
-         
+        
         post_id = request.args.get('id')
         blog_entry = Blog.query.filter_by(id=post_id).first()
 
         return render_template('blogentry.html', blog=blog_entry)
     
+    if request.args.get('user'):
+
+        user = request.args.get('user')
+        user_id = User.query.filter_by(username=user).first().id
+        blog_post = Blog.query.filter_by(owner_id=user_id).all()
+        return render_template('singleuser.html',users=blog_post, blog=blog_post)
+
     if request.method == 'POST':
         blog_title = request.form['title']
         blog_body = request.form['body']
@@ -118,8 +129,9 @@ def signup():
             session['username'] = username
             return redirect('/newpost')
         else:
-            #todo user better response messaging
-            return "<h1>Duplicate user</h1>"
+            flash('This username already exists.', 'error')
+            return redirect('/signup')
+
     return render_template('signup.html')
 
 
@@ -149,7 +161,8 @@ def new_entry():
             return render_template('/newpost.html', title=title)
             
         else:
-
+            
+            owner = User.query.filter_by(username=session['username']).first()
             blog_title = request.form['title']
             blog_body = request.form['body']
             new_blog_post = Blog(blog_title, blog_body, owner)
@@ -160,6 +173,17 @@ def new_entry():
             
             return redirect("/blog?id={0}".format(new_post_id))
         
+
+@app.route('/logout')
+def logout():
+    del session['username']
+    return redirect('/blog')
+
+
+@app.route('/', methods=['POST', 'GET'])
+def index():
+    users = User.query.all()
+    return render_template('index.html', users=users)
 
 
 

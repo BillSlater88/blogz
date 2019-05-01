@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>User's Posts</h1>
+
+<hr />
+
+    <ul>
+        {% for user in users %}
+        <div>
+        <li><a href="/blog?id={{blog.id}}">{{ user.title }}</a></li>
+        <input type="hidden" name="blog-id" value="{{blog.id}}" />
+        <p>{{user.body}}</p>
+        
+        </div>
+        {% endfor %}
+    </ul>
+
+
+<hr />
+
+{% endblock %}
