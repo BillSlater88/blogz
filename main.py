@@ -59,14 +59,15 @@ def blog_page():
     if request.method == 'POST':
         blog_title = request.form['title']
         blog_body = request.form['body']
-        new_blog_post = Blog(blog_title, blog_body)
+        owner = User.query.filter_by(username=session['username']).first()
+        new_blog_post = Blog(blog_title, blog_body, owner)
         db.session.add(new_blog_post)
         db.session.commit()
 
         blogs = Blog.query.all()
 
 
-        return render_template('blog.html', blogs=blogs)
+        return render_template('blog.html', blogs=blogs, owner=owner)
 
     else:
         blogs = Blog.query.all()
