@@ -46,15 +46,15 @@ def blog_page():
         
         post_id = request.args.get('id')
         blog_entry = Blog.query.filter_by(id=post_id).first()
-
-        return render_template('blogentry.html', blog=blog_entry)
+        user = User.query.filter_by(username=blog_entry.owner.username).first()
+        return render_template('blogentry.html', blog=blog_entry, user=user)
     
     if request.args.get('user'):
 
-        user = request.args.get('user')
-        user_id = User.query.filter_by(username=user).first().id
-        blog_post = Blog.query.filter_by(owner_id=user_id).all()
-        return render_template('singleuser.html',users=blog_post, blog=blog_post)
+        username = request.args.get('user')
+        user = User.query.filter_by(username=username).first()
+        blog_post = Blog.query.filter_by(owner_id=user.id).all()
+        return render_template('singleuser.html',user=user, blogs=blog_post)
 
     if request.method == 'POST':
         blog_title = request.form['title']

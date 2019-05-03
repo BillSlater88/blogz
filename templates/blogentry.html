@@ -10,6 +10,7 @@
         <h1><a href="/blog?id={{blog.id}}" >{{ blog.title }}</a></h1>
         <input type="hidden" name="blog-id" value="{{blog.id}}" />
         <p>{{blog.body}}</p>
+        <p>written by <a href="/blog?user={{user.username}}">{{ user.username }}</a></p>
         
         </div>
     </ul>
